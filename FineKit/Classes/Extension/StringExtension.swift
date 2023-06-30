@@ -238,19 +238,19 @@ public extension String {
 public extension String {
     
     /// 将原始的url编码为合法的url字符串
-    public func urlEncoded() -> String {
+    func urlEncoded() -> String {
         let encodeUrlString = self.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
         return encodeUrlString ?? ""
     }
      
     
     /// 将编码后的url转换回原始的url字符串
-    public func urlDecoded() -> String {
+    func urlDecoded() -> String {
         return self.removingPercentEncoding ?? ""
     }
     
     /// url合法化
-    public func urlLegal() -> URL? {
+    func urlLegal() -> URL? {
         return URL(string: self.urlEncoded())
     }
 }

@@ -18,14 +18,14 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-私人工具类
+私人工具类，包含拓展、文件管理、语言管理、常量、全局方法、XML解析等等，开发过程中封装的便利工具
                        DESC
 
-  s.homepage         = 'https://github.com/wyfhover@163.com/FineKit'
+  s.homepage         = 'https://github.com/wyfhover/FineKit'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'wyfhover@163.com' => 'yf_wen@edifier.com' }
-  s.source           = { :git => 'https://github.com/wyfhover@163.com/FineKit.git', :tag => s.version.to_s }
+  s.author           = { 'Fine' => 'wyfhover@163.com' }
+  s.source           = { :git => 'https://github.com/wyfhover/FineKit.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '10.0'

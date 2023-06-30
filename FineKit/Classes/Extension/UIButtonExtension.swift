@@ -34,7 +34,7 @@ public extension UIButton {
     func startCountdown(count: Int = 60, message: String = "%d") {
         let title = self.currentTitle!
         var countTime = count
-        let backgroundColor = self.backgroundColor
+//        let backgroundColor = self.backgroundColor
         let titleColor = self.currentTitleColor
         
         self.isCountdown = true
