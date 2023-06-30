@@ -78,9 +78,9 @@ public class FKFileManager {
     
     func copy(path: String, fileName: String, to toPath: FKFilePath, complete: ((Bool) -> Void)? = nil) {
         let targetPath = toPath.getPath() + self.tranform(fileName: fileName)
-        let kUrl = URL(fileURLWithPath: targetPath)
+        _ = URL(fileURLWithPath: targetPath)
         
-        guard let pathUrl = URL(string: path) else {
+        guard URL(string: path) != nil else {
             complete?(false)
             return
         }

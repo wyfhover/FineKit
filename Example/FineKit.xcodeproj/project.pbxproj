@@ -28,7 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		12BB7951B63786EC18AFB37F /* FineKit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = FineKit.podspec; path = ../FineKit.podspec; sourceTree = "<group>"; };
+		12BB7951B63786EC18AFB37F /* FineKit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = FineKit.podspec; path = ../FineKit.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		2D24EBB232851FE3218454EA /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		39E8B4C33C0D43746D922ECC /* Pods_FineKit_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FineKit_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3ADEC25B9948D9A80A632134 /* Pods-FineKit_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FineKit_Tests.release.xcconfig"; path = "Target Support Files/Pods-FineKit_Tests/Pods-FineKit_Tests.release.xcconfig"; sourceTree = "<group>"; };
@@ -311,13 +311,12 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-FineKit_Example/Pods-FineKit_Example-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/FineKit/FineKit.framework",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FineKit_Example/Pods-FineKit_Example-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FineKit.framework",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FineKit_Example/Pods-FineKit_Example-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
