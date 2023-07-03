@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'FineKit'
-  s.version          = '1.0.2'
+  s.version          = '1.0.3'
   s.summary          = 'Some convenient kits by Fine'
 
 # This description is used to generate tags and improve search results.
