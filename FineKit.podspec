@@ -47,27 +47,27 @@ Pod::Spec.new do |s|
 
   s.subspec 'Extension' do |ex|
     ex.source_files = 'FineKit/Classes/Extension/*.swift'
-    ex.frameworks = 'Foundation', 'UIKit', 'CommonCrypto'
+    ex.frameworks = 'Foundation', 'UIKit'
   end
 
   s.subspec 'FileManager' do |fm|
     fm.source_files = 'FineKit/Classes/FileManager/*.swift'
-    fm.frameworks = 'Foundation', 'UIKit', 'CommonCrypto'
+    fm.frameworks = 'Foundation', 'UIKit'
   end
 
   s.subspec 'LanguageManager' do |lm|
     lm.source_files = 'FineKit/Classes/LanguageManager/*.swift'
-    lm.frameworks = 'Foundation', 'UIKit', 'CommonCrypto'
+    lm.frameworks = 'Foundation', 'UIKit'
   end
 
   s.subspec 'Tools' do |ts|
     ts.source_files = 'FineKit/Classes/Tools/*.swift'
-    ts.frameworks = 'Foundation', 'UIKit', 'CommonCrypto'
+    ts.frameworks = 'Foundation', 'UIKit'
   end
 
   s.subspec 'XMLTool' do |xmlt|
     xmlt.source_files = 'FineKit/Classes/XMLTool/*.swift'
-    xmlt.frameworks = 'Foundation', 'UIKit', 'CommonCrypto'
+    xmlt.frameworks = 'Foundation', 'UIKit'
   end
 
 end
