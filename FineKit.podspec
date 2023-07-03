@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'FineKit'
-  s.version          = '1.0.1'
+  s.version          = '1.0.2'
   s.summary          = 'Some convenient kits by Fine'
 
 # This description is used to generate tags and improve search results.
@@ -17,9 +17,9 @@ Pod::Spec.new do |s|
 #   * Write the description between the DESC delimiters below.
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
-  s.description      = <<-DESC
-私人工具类，包含拓展、文件管理、语言管理、常量、全局方法、XML解析等等，开发过程中封装的便利工具
-                       DESC
+#  s.description      = <<-DESC
+#私人工具类，包含拓展、文件管理、语言管理、常量、全局方法、XML解析等等，开发过程中封装的便利工具
+#                       DESC
 
   s.homepage         = 'https://github.com/wyfhover/FineKit'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
@@ -35,34 +35,39 @@ Pod::Spec.new do |s|
   
   s.swift_version = ['5']
 
-  s.source_files = 'FineKit/Classes/**/*'
+#  s.source_files = 'FineKit/Classes/**/*'
   
   # s.resource_bundles = {
   #   'FineKit' => ['FineKit/Assets/*.png']
   # }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
+#   s.frameworks = 'Foundation', 'UIKit', 'CommonCrypto'
   # s.dependency 'AFNetworking', '~> 2.3'
 
   s.subspec 'Extension' do |ex|
     ex.source_files = 'FineKit/Classes/Extension/*.swift'
+    ex.frameworks = 'Foundation', 'UIKit', 'CommonCrypto'
   end
 
   s.subspec 'FileManager' do |fm|
     fm.source_files = 'FineKit/Classes/FileManager/*.swift'
+    fm.frameworks = 'Foundation', 'UIKit', 'CommonCrypto'
   end
 
   s.subspec 'LanguageManager' do |lm|
     lm.source_files = 'FineKit/Classes/LanguageManager/*.swift'
+    lm.frameworks = 'Foundation', 'UIKit', 'CommonCrypto'
   end
 
   s.subspec 'Tools' do |ts|
     ts.source_files = 'FineKit/Classes/Tools/*.swift'
+    ts.frameworks = 'Foundation', 'UIKit', 'CommonCrypto'
   end
 
   s.subspec 'XMLTool' do |xmlt|
     xmlt.source_files = 'FineKit/Classes/XMLTool/*.swift'
+    xmlt.frameworks = 'Foundation', 'UIKit', 'CommonCrypto'
   end
 
 end
