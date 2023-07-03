@@ -23,16 +23,17 @@ Pod::Spec.new do |s|
 
   s.homepage         = 'https://github.com/wyfhover/FineKit'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
-  s.license          = { :type => 'MIT', :file => 'LICENSE' }
+  s.license          = 'MIT'
   s.author           = { 'Fine' => 'wyfhover@163.com' }
-  s.source           = { :git => 'https://github.com/wyfhover/FineKit.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/wyfhover/FineKit.git', :tag => s.version }
+  s.documentation_url = 'https://www.baidu.com'
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
   
   s.platform = :ios
 
   s.ios.deployment_target = '12.0'
   
-  s.swift_version = '5.0'
+  s.swift_version = ['5']
 
   s.source_files = 'FineKit/Classes/**/*'
   
