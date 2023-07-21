@@ -10,13 +10,14 @@ import UIKit
 
 private var KEY_BUTTON_IS_COUNTDOWN = "KEY_BUTTON_IS_COUNTDOWN"
 
-public extension UIButton {
+public extension FineKitWrapper where Base == UIButton {
+    
     /// 是否正在倒计时
     var isCountdown: Bool {
         set {
             objc_setAssociatedObject(self, &KEY_BUTTON_IS_COUNTDOWN, newValue, .OBJC_ASSOCIATION_ASSIGN)
         }
-        
+
         get {
             if let kIsCountdown = objc_getAssociatedObject(self, &KEY_BUTTON_IS_COUNTDOWN) as? Bool {
                 return kIsCountdown
@@ -31,83 +32,83 @@ public extension UIButton {
     /// - Parameters:
     ///   - count: 倒计时长
     ///   - message: 显示信息，带count参数占位符
-    func startCountdown(count: Int = 60, message: String = "%d") {
-        let title = self.currentTitle!
+    mutating func startCountdown(count: Int = 60, message: String = "%d") {
+        let title = self.base.currentTitle!
         var countTime = count
 //        let backgroundColor = self.backgroundColor
-        let titleColor = self.currentTitleColor
+        let titleColor = self.base.currentTitleColor
         
-        self.isCountdown = true
-        self.isEnabled = false
+        self.base.fk.isCountdown = true
+        self.base.isEnabled = false
 //        self.backgroundColor = UIColor.clear
         
         let time = DispatchSource.makeTimerSource(queue: DispatchQueue.main)
         
         time.schedule(deadline: .now(), repeating: .seconds(1))
         
-        time.setEventHandler {
+        time.setEventHandler { [weak base = self.base] in
+            guard var kBase = base else { return }
             
             countTime = countTime - 1
             
             if countTime <= 0 {
                 time.cancel()
                 
-                self.isCountdown = false
-                self.isEnabled = true
+                kBase.fk.isCountdown = false
+                kBase.isEnabled = true
 //                self.backgroundColor = backgroundColor
-                self.setTitleColor(titleColor, for: .normal)
-                self.setTitle(title, for: .normal)
+                kBase.setTitleColor(titleColor, for: .normal)
+                kBase.setTitle(title, for: .normal)
                 
             } else {
-                self.setTitle(String(format: message, countTime), for: .normal)
+                kBase.setTitle(String(format: message, countTime), for: .normal)
             }
-            
         }
         
         time.resume()
     }
     
     func setBackgroundColor(_ color: UIColor, for state: UIControl.State) {
-        self.setBackgroundImage(UIImage.from(color: color), for: state)
+        self.base.setBackgroundImage(UIImage.fk.from(color: color), for: state)
     }
     
-    static func cz_init(image: UIImage?, highlight: UIImage?, select: UIImage?) -> Self {
-        let button = Self(type: .custom)
-        button.cz_setImage(image, highlight: highlight, select: select)
+    static func cz_init(image: UIImage?, highlight: UIImage?, select: UIImage?) -> Base {
+        let button = Base(type: .custom)
+        button.fk.cz_setImage(image, highlight: highlight, select: select)
         return button
     }
     
-    static func cz_init(title: String?, font: UIFont?, color: UIColor?, highlightTitle: String? = nil, selectTitle: String? = nil, highlightColor: UIColor? = nil, selectColor: UIColor? = nil) -> Self {
-        let button = Self(type: .custom)
-        button.cz_setTitle(title, highlightTitle: highlightTitle, selectTitle: selectTitle, font: font, color: color, highlightColor: highlightColor, selectColor: selectColor)
+    static func cz_init(title: String?, font: UIFont?, color: UIColor?, highlightTitle: String? = nil, selectTitle: String? = nil, highlightColor: UIColor? = nil, selectColor: UIColor? = nil) -> Base {
+        let button = Base(type: .custom)
+        button.fk.cz_setTitle(title, highlightTitle: highlightTitle, selectTitle: selectTitle, font: font, color: color, highlightColor: highlightColor, selectColor: selectColor)
         return button
     }
     
     func cz_setTitle(_ title: String?, highlightTitle: String?, selectTitle: String?, font: UIFont?, color: UIColor?, highlightColor: UIColor?, selectColor: UIColor?) {
-        self.setTitle(title, for: .normal)
-        self.setTitle(highlightTitle, for: .highlighted)
-        self.setTitle(selectTitle, for: .selected)
+        self.base.setTitle(title, for: .normal)
+        self.base.setTitle(highlightTitle, for: .highlighted)
+        self.base.setTitle(selectTitle, for: .selected)
         
-        self.setTitleColor(color, for: .normal)
-        self.setTitleColor(highlightColor, for: .highlighted)
-        self.setTitleColor(selectColor, for: .selected)
+        self.base.setTitleColor(color, for: .normal)
+        self.base.setTitleColor(highlightColor, for: .highlighted)
+        self.base.setTitleColor(selectColor, for: .selected)
         
-        self.titleLabel?.font = font
+        self.base.titleLabel?.font = font
     }
     
     func cz_setImage(_ image: UIImage?, highlight: UIImage?, select: UIImage?) {
-        self.setImage(image, for: .normal)
-        self.setImage(highlight, for: .highlighted)
-        self.setImage(select, for: .selected)
+        self.base.setImage(image, for: .normal)
+        self.base.setImage(highlight, for: .highlighted)
+        self.base.setImage(select, for: .selected)
     }
 }
 
-public extension UIButton {
+public extension FineKitWrapper where Base == UIButton {
     func setRightImage(){
-        let imvWidth = self.imageView!.bounds.size.width + 5
-        let labelWidth = self.titleLabel!.bounds.size.width
-        self.titleEdgeInsets = UIEdgeInsets(top: 0, left: -imvWidth, bottom: 0, right: imvWidth)
-        self.imageEdgeInsets = UIEdgeInsets(top: 0, left: labelWidth, bottom: 0, right: -labelWidth)
+        let imvWidth = self.base.imageView!.bounds.size.width + 5
+        let labelWidth = self.base.titleLabel!.bounds.size.width
+        self.base.titleEdgeInsets = UIEdgeInsets(top: 0, left: -imvWidth, bottom: 0, right: imvWidth)
+        self.base.imageEdgeInsets = UIEdgeInsets(top: 0, left: labelWidth, bottom: 0, right: -labelWidth)
     }
 }
 
@@ -119,7 +120,7 @@ public enum WButtonEdgeInsetsStyle {
     case Bottom
 }
 
-public extension UIButton {
+public extension FineKitWrapper where Base == UIButton {
     
     /// 重新布局lable 和 image
     /// - Parameters:
@@ -127,15 +128,15 @@ public extension UIButton {
     ///   - imageTitleSpace: lable 和 image 间距
     func layoutButton(style: WButtonEdgeInsetsStyle, imageTitleSpace: CGFloat) {
         //得到imageView和titleLabel的宽高
-        let imageWidth = self.imageView?.frame.size.width
-        let imageHeight = self.imageView?.frame.size.height
+        let imageWidth = self.base.imageView?.frame.size.width
+        let imageHeight = self.base.imageView?.frame.size.height
         
         
         var labelWidth: CGFloat! = 0.0
         var labelHeight: CGFloat! = 0.0
         
-        labelWidth = self.titleLabel?.intrinsicContentSize.width
-        labelHeight = self.titleLabel?.intrinsicContentSize.height
+        labelWidth = self.base.titleLabel?.intrinsicContentSize.width
+        labelHeight = self.base.titleLabel?.intrinsicContentSize.height
 //        labelWidth = self.titleLabel?.getRightWidth(height: self.bounds.height)
 //        labelHeight = self.titleLabel?.getRightWidth(height: self.bounds.width)
         
@@ -168,8 +169,8 @@ public extension UIButton {
             
         }
         
-        self.titleEdgeInsets = labelEdgeInsets
-        self.imageEdgeInsets = imageEdgeInsets
+        self.base.titleEdgeInsets = labelEdgeInsets
+        self.base.imageEdgeInsets = imageEdgeInsets
         
     }
 }

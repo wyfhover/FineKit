@@ -27,7 +27,7 @@ public func m(_ closure:@escaping () -> ()) {
 /// 子线程延迟
 /// - Parameters:
 ///   - interval: 延迟时长
-public func delayG(_ interval: TimeInterval, action:@escaping () -> ()) {
+public func FKDelayG(_ interval: TimeInterval, action:@escaping () -> ()) {
     let when = DispatchTime.now() + interval
     DispatchQueue.global().asyncAfter(deadline: when, execute: action)
 }
@@ -35,7 +35,7 @@ public func delayG(_ interval: TimeInterval, action:@escaping () -> ()) {
 /// 主线程延迟
 /// - Parameters:
 ///   - interval: 延迟时长
-public func delayM(_ interval: TimeInterval, closure:@escaping ()->()) {
+public func FKDelayM(_ interval: TimeInterval, closure:@escaping ()->()) {
     let when = DispatchTime.now() + interval
     DispatchQueue.main.asyncAfter(deadline: when, execute: closure)
 }
@@ -44,7 +44,7 @@ public func delayM(_ interval: TimeInterval, closure:@escaping ()->()) {
 /// 线程锁
 /// - Parameters:
 ///   - lock: 被锁对象
-public func synchronized(_ lock: Any, closure:()->()){
+public func FKSynchronized(_ lock: Any, closure:()->()){
     objc_sync_enter(lock)
     closure()
     objc_sync_exit(lock)
@@ -53,18 +53,18 @@ public func synchronized(_ lock: Any, closure:()->()){
 // MARK:  -  存储相关
 
 /// 保存
-public func SetUserDefault(_ key : String, _ value : Any?){
+public func FKSetUserDefault(_ key : String, _ value : Any?){
     UserDefaults.standard.set(value, forKey: key)
     UserDefaults.standard.synchronize()
 }
 
 /// 获取
-public func GetUserDefault(_ key : String) -> Any?{
+public func FKGetUserDefault(_ key : String) -> Any?{
     return UserDefaults.standard.object(forKey: key)
 }
 
 /// 移除
-public func RemoveUserDefault(_ key : String) {
+public func FKRemoveUserDefault(_ key : String) {
     UserDefaults.standard.removeObject(forKey: key)
     UserDefaults.standard.synchronize()
 }
@@ -75,7 +75,7 @@ public func RemoveUserDefault(_ key : String) {
 /// - Parameters:
 ///   - key: 通知名
 ///   - userInfo: 参数
-public func PostNotif(_ key: String, _ userInfo : [String: Any]? = nil){
+public func FKPostNotif(_ key: String, _ userInfo : [String: Any]? = nil){
     NotificationCenter.default.post(name: Notification.Name(key), object: nil, userInfo: userInfo)
 }
 
@@ -84,7 +84,7 @@ public func PostNotif(_ key: String, _ userInfo : [String: Any]? = nil){
 ///   - observer: 接收对象
 ///   - selecter: 实现方法
 ///   - key: 通知名
-public func AddObserver(_ observer: Any, _ selecter: Selector, _ key: String){
+public func FKAddObserver(_ observer: Any, _ selecter: Selector, _ key: String){
     NotificationCenter.default.addObserver(observer, selector: selecter, name: Notification.Name(key), object: nil)
 }
 
@@ -94,7 +94,7 @@ public func AddObserver(_ observer: Any, _ selecter: Selector, _ key: String){
 ///   - selecter: 实现方法
 ///   - name: 通知名
 ///   - object: 携带参数
-public func AddObserver(_ observer: Any, _ selecter: Selector, _ name: NSNotification.Name?, _ object: Any? = nil){
+public func FKAddObserver(_ observer: Any, _ selecter: Selector, _ name: NSNotification.Name?, _ object: Any? = nil){
     NotificationCenter.default.addObserver(observer, selector: selecter, name: name, object: object)
 }
 
@@ -102,7 +102,7 @@ public func AddObserver(_ observer: Any, _ selecter: Selector, _ name: NSNotific
 /// - Parameters:
 ///   - observer: 接收对象
 ///   - key: 通知名
-public func RemoveObserver(_ observer: Any, _ key: String? = nil ){
+public func FKRemoveObserver(_ observer: Any, _ key: String? = nil ){
     if key == nil {
         NotificationCenter.default.removeObserver(observer)
     } else {
@@ -115,7 +115,7 @@ public func RemoveObserver(_ observer: Any, _ key: String? = nil ){
 ///   - signed: 有符号整形
 ///   - unsigned: 无符号整形
 /// - Important: unsigned.max比signed值大。 即要求unsigned & signed二进制位相同 U.bitWidth == S.bitWidth (UInt8 -- Int8。 UInt16  -x- Int8 错误)
-public func Convert<S: SignedInteger, U: UnsignedInteger>(signed: S, unsigned: inout U) where S: FixedWidthInteger, U: FixedWidthInteger {
+public func FKConvert<S: SignedInteger, U: UnsignedInteger>(signed: S, unsigned: inout U) where S: FixedWidthInteger, U: FixedWidthInteger {
     assert(U.bitWidth == S.bitWidth, "U的二进制位必须与S的二进制位相同,U.bitWidth == S.bitWidth")
     if signed >= 0 {
         unsigned = U(signed)
@@ -131,7 +131,7 @@ public func Convert<S: SignedInteger, U: UnsignedInteger>(signed: S, unsigned: i
 ///   - unsigned: 无符号整形
 ///   - signed: 有符号整形
 /// - Important: 当unsigned二进制最到位为0时，比signed.max小。 即要求unsigned & signed二进制位相同 U.bitWidth == S.bitWidth (UInt8 -- Int8。 UInt16  -x- Int8 错误)
-public func Reconvert<U: UnsignedInteger, S: SignedInteger>(unsigned: U, signed: inout S) where S: FixedWidthInteger, U: FixedWidthInteger {
+public func FKReconvert<U: UnsignedInteger, S: SignedInteger>(unsigned: U, signed: inout S) where S: FixedWidthInteger, U: FixedWidthInteger {
     assert(U.bitWidth == S.bitWidth, "U的二进制位必须与S的二进制位相同,U.bitWidth == S.bitWidth")
     if unsigned > S.max { //负数
         let signed_int = ~unsigned + 1
@@ -146,7 +146,7 @@ public func Reconvert<U: UnsignedInteger, S: SignedInteger>(unsigned: U, signed:
 }
 
 /// 获取APP 名称
-public func GetAppName() -> String {
+public func FKGetAppName() -> String {
     if let info = Bundle.main.infoDictionary, let value = info["CFBundleDisplayName"] as? String {
         return value
     } else {
@@ -155,7 +155,7 @@ public func GetAppName() -> String {
 }
 
 /// 获取APP版本号
-public func GetAppVersion() -> String {
+public func FKGetAppVersion() -> String {
     if let info = Bundle.main.infoDictionary, let value = info["CFBundleShortVersionString"] as? String {
         return value
     } else {
@@ -164,7 +164,7 @@ public func GetAppVersion() -> String {
 }
 
 /// 获取build号
-public func GetAppBuild() -> String {
+public func FKGetAppBuild() -> String {
     if let info = Bundle.main.infoDictionary, let value = info["CFBundleVersion"] as? String {
         return value
     } else {
@@ -173,7 +173,7 @@ public func GetAppBuild() -> String {
 }
 
 /// 获取BundleID
-public func GetBundleID() -> String {
+public func FKGetBundleID() -> String {
     if let info = Bundle.main.infoDictionary, let value = info["CFBundleIdentifier"] as? String {
         return value
     } else {
@@ -182,7 +182,7 @@ public func GetBundleID() -> String {
 }
 
 /// 获取APP图标
-public func GetAppIcon() -> UIImage {
+public func FKGetAppIcon() -> UIImage {
     if  let infoPlist = Bundle.main.infoDictionary,
         let bundleIcons = infoPlist["CFBundleIcons"] as? [String : Any],
         let primaryIcon = bundleIcons["CFBundlePrimaryIcon"] as? [String : Any],
@@ -195,7 +195,7 @@ public func GetAppIcon() -> UIImage {
 }
 
 /// 截取屏幕
-public func ScreenSnapshot(view: UIView) -> UIImage? {
+public func FKScreenSnapshot(view: UIView) -> UIImage? {
     
     UIGraphicsBeginImageContextWithOptions(view.frame.size, false, 0.0)
     view.layer.render(in: UIGraphicsGetCurrentContext()!)
@@ -209,7 +209,7 @@ public func ScreenSnapshot(view: UIView) -> UIImage? {
 /// 检查APP更新
 /// - Parameters:
 ///   - appID: appID
-public func CheckAppUpgrade(appID: String, callback: @escaping ((Bool, String?, String?)->Void)){
+public func FKCheckAppUpgrade(appID: String, callback: @escaping ((Bool, String?, String?)->Void)){
     let url_str = "http://itunes.apple.com/cn/lookup?id=\(appID)"
     guard let url = URL(string: url_str) else { return }
     
@@ -223,7 +223,7 @@ public func CheckAppUpgrade(appID: String, callback: @escaping ((Bool, String?, 
                 let releaseNotes = kResults["releaseNotes"] as? String ?? "" // 更新说明
                 let link = kResults["trackViewUrl"] as? String // 下载地址
                 
-                let current_version = GetAppVersion()
+                let current_version = FKGetAppVersion()
                 
                 if current_version.compare(version) == .orderedAscending {
                     callback(true, releaseNotes, link)

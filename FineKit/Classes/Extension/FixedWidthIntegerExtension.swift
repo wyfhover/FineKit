@@ -8,16 +8,17 @@
 
 import Foundation
 
-public extension FixedWidthInteger {
+public extension FineKitWrapper where Base: FixedWidthInteger {
+        
     func toBytes() -> [UInt8] {
-        let size = self.bitWidth / 8
+        let size = self.base.bitWidth / 8
         var bytes: [UInt8] = []
         
         for idx in 0 ..< size {
-            if idx == size - 1, let _ = self as? (any SignedInteger) {
-                bytes.insert(UInt8((self >> (idx * 8)) & 0x7F) , at: 0)
+            if idx == size - 1, let _ = self.base as? (any SignedInteger) {
+                bytes.insert(UInt8((self.base >> (idx * 8)) & 0x7F) , at: 0)
             } else {
-                bytes.insert(UInt8((self >> (idx * 8)) & 0xFF) , at: 0)
+                bytes.insert(UInt8((self.base >> (idx * 8)) & 0xFF) , at: 0)
             }
         }
         
@@ -41,4 +42,5 @@ public extension FixedWidthInteger {
         
         return target
     }
+    
 }

@@ -8,12 +8,12 @@
 
 import Foundation
 
-public extension BinaryFloatingPoint {
+public extension FineKitWrapper where Base: BinaryFloatingPoint {
     
     /// 浮点型转byte数组
     func toBytes() -> [UInt8] {
-        var value = self
-        let size = MemoryLayout<Self>.size
+        var value = self.base
+        let size = MemoryLayout<Base>.size
         return withUnsafePointer(to: &value) {
             $0.withMemoryRebound(to: UInt8.self, capacity: size) {
                 Array(UnsafeBufferPointer(start: $0, count: size))

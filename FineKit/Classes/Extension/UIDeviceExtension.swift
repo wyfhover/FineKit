@@ -8,10 +8,10 @@
 
 import UIKit
 
-public extension UIDevice {
+public extension FineKitWrapper where Base == UIDevice.Type {
     
     /// 设备型号名称，详情查看https://www.theiphonewiki.com/wiki/Models
-    static var modelName: String {
+    var modelName: String {
         var systemInfo = utsname()
         uname(&systemInfo)
         let machineMirror = Mirror(reflecting: systemInfo.machine)

@@ -8,36 +8,35 @@
 
 import Foundation
 
-public extension Data {
+public extension FineKitWrapper where Base == Data {
     
     /// Data转十六进制String
     /// - Parameter split: 每个byte的分隔符
     func hexadecimal(_ split: String = "") -> String {
-        return map { String(format: "%02X", $0) }
-                .joined(separator: split)
+        return self.base.map { String(format: "%02X", $0) }.joined(separator: split)
     }
-
 }
 
-public extension NSData {
-    func getTarget(begin: Int, length: Int) -> NSData{
-        if self.length < (begin + length){
+public extension FineKitWrapper where Base == NSData {
+    func getTarget(begin: Int, length: Int) -> NSData {
+        if self.base.length < (begin + length){
             return NSData()
         }else{
-            return self.subdata(with: NSMakeRange(begin, length)) as NSData
+            return self.base.subdata(with: NSMakeRange(begin, length)) as NSData
         }
     }
+    
     func getLast(begin: Int) -> NSData {
-        if self.length <= begin {
+        if self.base.length <= begin {
             return NSData()
         }else{
-            return self.subdata(with: NSMakeRange(begin, self.length - begin)) as NSData
+            return self.base.subdata(with: NSMakeRange(begin, self.base.length - begin)) as NSData
         }
     }
     
     func safeMemcpy(_ dst: UnsafeMutableRawPointer!, _ n: Int){
-        if self.length >= n{
-            memcpy(dst, self.bytes, n)
+        if self.base.length >= n{
+            memcpy(dst, self.base.bytes, n)
         }
         else{
             print("数据解析出错")

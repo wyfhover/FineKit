@@ -8,9 +8,9 @@
 
 import Foundation
 
-public extension UIImage {
+public extension FineKitWrapper where Base == UIImage.Type {
     
-    static func image(_ text:String,
+    func image(_ text:String,
                       size:CGSize,
                       font:UIFont,
                       backColor:UIColor,
@@ -29,42 +29,10 @@ public extension UIImage {
         UIGraphicsEndImageContext()
         return image
     }
-}
-
-public extension UIImage {
-    
-    /// 修改大小
-    /// - Parameter size: 尺寸
-    func toSize(_ size: CGFloat) -> UIImage {
-        return self.toSize(size, size)
-    }
-    
-    /// 修改大小
-    /// - Parameters:
-    ///   - width: 宽
-    ///   - height: 高
-    func toSize(_ width: CGFloat, _ height: CGFloat) -> UIImage{
-        let size = CGSize(width: width, height: height)
-        UIGraphicsBeginImageContextWithOptions (size, false, UIScreen.main.scale);
-        self.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-//        let context = UIGraphicsGetCurrentContext() // 获取上下文
-//        let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
-//        context?.fill(rect) //填充布局
-        let reSizeImage: UIImage = UIGraphicsGetImageFromCurrentImageContext() ?? self;
-        UIGraphicsEndImageContext();
-        return reSizeImage;
-    }
-    
-    
-    /// 等比例缩放
-    /// - Parameter scale: 倍率
-    func toScale(_ scale: CGFloat) -> UIImage {
-        return self.toSize(self.size.width * scale, self.size.height * scale)
-    }
     
     /// 颜色绘制图片
     /// - Parameter color: 颜色
-    class func from(color: UIColor) -> UIImage {
+    func from(color: UIColor) -> UIImage {
         let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
         UIGraphicsBeginImageContext(rect.size) // 开启上下文
         let context = UIGraphicsGetCurrentContext() // 获取上下文
@@ -74,7 +42,6 @@ public extension UIImage {
         UIGraphicsEndImageContext() //关闭上下文
         return image
     }
-    
     
 //    class func tempBunel() -> Bundle? {
 //
@@ -89,4 +56,37 @@ public extension UIImage {
 //
 //        return Bundle(url: bundleUrl!)
 //    }
+}
+
+public extension FineKitWrapper where Base == UIImage {
+    
+    /// 修改大小
+    /// - Parameter size: 尺寸
+    func toSize(_ size: CGFloat) -> UIImage {
+        return self.toSize(size, size)
+    }
+    
+    /// 修改大小
+    /// - Parameters:
+    ///   - width: 宽
+    ///   - height: 高
+    func toSize(_ width: CGFloat, _ height: CGFloat) -> UIImage{
+        let size = CGSize(width: width, height: height)
+        UIGraphicsBeginImageContextWithOptions (size, false, UIScreen.main.scale);
+        self.base.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+//        let context = UIGraphicsGetCurrentContext() // 获取上下文
+//        let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+//        context?.fill(rect) //填充布局
+        let reSizeImage: UIImage = UIGraphicsGetImageFromCurrentImageContext() ?? self.base;
+        UIGraphicsEndImageContext();
+        return reSizeImage;
+    }
+    
+    
+    /// 等比例缩放
+    /// - Parameter scale: 倍率
+    func toScale(_ scale: CGFloat) -> UIImage {
+        return self.toSize(self.base.size.width * scale, self.base.size.height * scale)
+    }
+    
 }

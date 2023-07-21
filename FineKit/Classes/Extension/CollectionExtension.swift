@@ -8,48 +8,49 @@
 
 import Foundation
 
-public extension Collection {
+//public extension Collection {
+public extension FineKitWrapper where Base: Collection {
     /// 下标取值
-    subscript(w index: Int ) -> Element? {
-        let tIndex = self.index(self.startIndex, offsetBy: index)
-        return (self.startIndex ..< self.endIndex).contains(tIndex) ? self[tIndex] : nil
+    subscript(w index: Int ) -> Base.Element? {
+        let tIndex = self.base.index(self.base.startIndex, offsetBy: index)
+        return (self.base.startIndex ..< self.base.endIndex).contains(tIndex) ? self.base[tIndex] : nil
     }
     
     /// 根据range获取子集 a[1...3]
-    subscript(w r: ClosedRange<Int>) -> Self.SubSequence? {
+    subscript(w r: ClosedRange<Int>) -> Base.SubSequence? {
         guard r.lowerBound <= r.upperBound else { return nil }
-        guard r.lowerBound < count && r.upperBound < count else { return nil }
-        let start = index(self.startIndex, offsetBy: Swift.max(r.lowerBound, 0))
-        let end = index(startIndex, offsetBy: Swift.min(r.upperBound, count - 1))
-        return self[start...end]
+        guard r.lowerBound < self.base.count && r.upperBound < self.base.count else { return nil }
+        let start = self.base.index(self.base.startIndex, offsetBy: Swift.max(r.lowerBound, 0))
+        let end = self.base.index(self.base.startIndex, offsetBy: Swift.min(r.upperBound, self.base.count - 1))
+        return self.base[start...end]
     }
     
     /// 根据range获取子集 a[0..<2]
-    subscript(w r: Range<Int>) -> Self.SubSequence? {
+    subscript(w r: Range<Int>) -> Base.SubSequence? {
         guard r.lowerBound < r.upperBound else { return nil } //[1..<1] 返回“”
-        guard r.lowerBound < count && r.upperBound <= count else { return nil }
-        let start = index(startIndex, offsetBy: Swift.max(r.lowerBound, 0))
-        let end = index(startIndex, offsetBy: Swift.min(r.upperBound, count))
-        return self[start..<end]
+        guard r.lowerBound < self.base.count && r.upperBound <= self.base.count else { return nil }
+        let start = self.base.index(self.base.startIndex, offsetBy: Swift.max(r.lowerBound, 0))
+        let end = self.base.index(self.base.startIndex, offsetBy: Swift.min(r.upperBound, self.base.count))
+        return self.base[start..<end]
     }
     
     /// 根据range获取子集 a[...2]
-    subscript(w r: PartialRangeThrough<Int>) -> Self.SubSequence? {
+    subscript(w r: PartialRangeThrough<Int>) -> Base.SubSequence? {
         guard r.upperBound >= 0 else { return nil }
-        let end = index(startIndex, offsetBy: Swift.min(r.upperBound, count - 1))
-        return self[startIndex...end]
+        let end = self.base.index(self.base.startIndex, offsetBy: Swift.min(r.upperBound, self.base.count - 1))
+        return self.base[self.base.startIndex...end]
     }
     /// 根据range获取子集 a[0...]
-    subscript(w r: PartialRangeFrom<Int>) -> Self.SubSequence? {
-        guard r.lowerBound < count else { return nil }
-        let start = index(startIndex, offsetBy: Swift.max(r.lowerBound, 0))
-        let end = index(startIndex, offsetBy: count - 1)
-        return self[start...end]
+    subscript(w r: PartialRangeFrom<Int>) -> Base.SubSequence? {
+        guard r.lowerBound < self.base.count else { return nil }
+        let start = self.base.index(self.base.startIndex, offsetBy: Swift.max(r.lowerBound, 0))
+        let end = self.base.index(self.base.startIndex, offsetBy: self.base.count - 1)
+        return self.base[start...end]
     }
     /// 根据range获取子集 a[..<3]
-    subscript(w r: PartialRangeUpTo<Int>) -> Self.SubSequence? {
-        guard r.upperBound <= count && r.upperBound > 0 else { return nil } // [..<0] 返回“”
-        let end = index(startIndex, offsetBy: Swift.min(r.upperBound, count))
-        return self[startIndex..<end]
+    subscript(w r: PartialRangeUpTo<Int>) -> Base.SubSequence? {
+        guard r.upperBound <= self.base.count && r.upperBound > 0 else { return nil } // [..<0] 返回“”
+        let end = self.base.index(self.base.startIndex, offsetBy: Swift.min(r.upperBound, self.base.count))
+        return self.base[self.base.startIndex..<end]
     }
 }

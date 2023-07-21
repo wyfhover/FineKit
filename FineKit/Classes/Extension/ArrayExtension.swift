@@ -6,28 +6,28 @@
 //  Copyright © Fine. All rights reserved.
 //
 
-public extension Array {
+public extension FineKitWrapper where Base == Array<Any> {
     
-    mutating func popFirst() -> Array.Element? {
-        if self.count > 0 {
-            return self.removeFirst()
+    mutating func popFirst() -> Base.Element? {
+        if self.base.count > 0 {
+            return self.base.removeFirst()
         } else {
             return nil
         }
     }
     
-    mutating func pop(index: Int) -> Array.Element? {
-        if !self.isEmpty && index < self.count {
-            return self.remove(at: index)
+    mutating func pop(index: Int) -> Base.Element? {
+        if !self.base.isEmpty && index < self.base.count {
+            return self.base.remove(at: index)
         } else {
             return nil
         }
     }
     
     // 去重
-    func filterDuplicates<E: Equatable>(_ filter: (Element) -> E) -> [Element] {
-        var result = [Element]()
-        for value in self {
+    func filterDuplicates<E: Equatable>(_ filter: (Base.Element) -> E) -> [Base.Element] {
+        var result = [Base.Element]()
+        for value in self.base {
             let key = filter(value)
             if !result.map({filter($0)}).contains(key) {
                 result.append(value)
@@ -37,12 +37,11 @@ public extension Array {
     }
 }
 
-public extension Array where Element == UInt8 {
-    
+public extension FineKitWrapper where Base == Array<UInt8> {
     /// 16进制字符
     var hexString: String {
         get {
-            return self.compactMap { String(format: "%02x", $0).uppercased() }
+            return self.base.compactMap { String(format: "%02x", $0).uppercased() }
             .joined(separator: "")
         }
     }
@@ -52,7 +51,7 @@ public extension Array where Element == UInt8 {
     func to<T>(type: T.Type) -> T where T: FixedWidthInteger {
         let size = type.bitWidth / 8
         var target: T = 0
-        var ary = self
+        var ary = self.base
         
         while ary.count < size {
             ary.insert(0, at: 0)
@@ -70,7 +69,7 @@ public extension Array where Element == UInt8 {
     func to<T>(type: T.Type) -> T where T: BinaryFloatingPoint {
         var target: T = 0.0
 
-        memcpy(&target, self.reversed(), self.count) // reversed大端转小端
+        memcpy(&target, self.base.reversed(), self.base.count) // reversed大端转小端
         return target
     }
 }

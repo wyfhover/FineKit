@@ -8,8 +8,8 @@
 
 import UIKit
 
-public extension UIColor {
-    class var random: UIColor {
+public extension FineKitWrapper where Base == UIColor.Type {
+    var random: UIColor {
         get{
             let red = CGFloat(arc4random()%256)/255.0
             let green = CGFloat(arc4random()%256)/255.0
@@ -18,33 +18,16 @@ public extension UIColor {
         }
     }
     
-    /// 修改透明度
-    /// - Parameter value: [0.0...1.0]
-    func alpha(_ value: CGFloat) -> UIColor {
-        return self.withAlphaComponent(value)
-    }
-    
     /// 0-255 的RGBA颜色设置
-    static func hex<T>(_ red: T, _ green: T, _ blue: T, _ alpha: T = 255) -> UIColor where T: UnsignedInteger {
+    func hex<T>(_ red: T, _ green: T, _ blue: T, _ alpha: T = 255) -> UIColor where T: UnsignedInteger {
         return UIColor(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: CGFloat(alpha) / 255.0)
     }
     
     /// 无符号32整形 RGBA颜色设置，若无透明度默认0xFF
-    /// - Parameter hexInt: 颜色值 0xAABBCCDD 或 0xAABBCC
-    static func hex(_ hexInt: UInt32, alpha: UInt8 = 0xFF) -> UIColor {
-//        if hexInt > 0xFFFFFF {
-//            let r = (hexInt & 0xFF000000) >> 24
-//            let g = (hexInt & 0x00FF0000) >> 16
-//            let b = (hexInt & 0x0000FF00) >> 8
-//            let a = (hexInt & 0x000000FF)
-//            return self.hex(r, g, b, a)
-//        } else {
-//            let r = (hexInt & 0xFF0000) >> 16
-//            let g = (hexInt & 0x00FF00) >> 8
-//            let b = (hexInt & 0x0000FF) >> 0
-//            let a: UInt32 = 0xFF
-//            return self.hex(r, g, b, a)
-//        }
+    /// - Parameters:
+    ///   - hexInt: 颜色值 0xAABBCC
+    ///   - alpha: 透明度 0 - 255
+    func hex(_ hexInt: UInt32, alpha: UInt8 = 0xFF) -> UIColor {
         let r = UInt8((hexInt & 0xFF0000) >> 16)
         let g = UInt8((hexInt & 0x00FF00) >> 8)
         let b = UInt8((hexInt & 0x0000FF) >> 0)
@@ -52,15 +35,11 @@ public extension UIColor {
         return self.hex(r, g, b, a)
     }
     
-    /// 字符串 RGBA颜色设置，若无透明度默认0xFF
-    /// - Parameter hexStr: 前缀可为0x、0X、##、#，或为空
-    /// 颜色值如"RRGGBB"，可带透明度"RRGGBBAA"
-    /// 长度不足6位后位填充0
-    static func hex(_ hexStr: String) -> UIColor {
+    private func fixup(hexStr: String) -> String {
         var tHex = hexStr
         
         // 将字符串转成大写
-         tHex = tHex.uppercased()
+        tHex = tHex.uppercased()
         
         // 掐头
         if tHex.hasPrefix("0x") || tHex.hasPrefix("##") || tHex.hasPrefix("0X") {
@@ -74,6 +53,16 @@ public extension UIColor {
         while tHex.count < 6 {
             tHex.append("0")
         }
+        
+        return tHex
+    }
+    
+    /// 字符串 RGBA颜色设置，若无透明度默认0xFF
+    /// - Parameter hexStr: 前缀可为0x、0X、##、#，或为空
+    /// 颜色值如"RRGGBB"，可带透明度"RRGGBBAA"
+    /// 长度不足6位后位填充0
+    func hex(_ hexStr: String) -> UIColor {
+        let tHex = self.fixup(hexStr: hexStr)
         
         //4.分别截取RGB
         var range = NSRange(location: 0, length: 2)
@@ -101,9 +90,45 @@ public extension UIColor {
         
         return self.hex(r, g, b, a)
     }
+    
+    /// 字符串 RGBA颜色设置，若无透明度默认0xFF
+    /// - Parameters:
+    ///   - hexStr: 前缀可为0x、0X、##、#，或为空
+    ///   - alpha: 透明度，若hexStr含透明度，则使用hexStr的透明度，默认1
+    func hex(_ hexStr: String, alpha: Float = 1.0) -> UIColor {
+        
+        let tHex = self.fixup(hexStr: hexStr)
+        
+        if tHex.count == 8 {
+            return self.hex(hexStr)
+        }
+        
+        var kAlpha = alpha
+        if kAlpha > 1 {
+            kAlpha = 1
+        } else if kAlpha < 0 {
+            kAlpha = 0
+        }
+        
+        let alpha_uint8: UInt8 = UInt8(roundf(kAlpha * 255.0))
+        let aHex = String(format: "%02X", alpha_uint8)
+                
+        return self.hex(hexStr + aHex)
+    }
 }
 
-public extension UIColor {
+public extension FineKitWrapper where Base == UIColor {
+    
+    /// 修改透明度
+    /// - Parameter value: [0.0...1.0]
+    func alpha(_ value: CGFloat) -> UIColor {
+        return self.base.withAlphaComponent(value)
+    }
+    
+    
+}
+
+public extension FineKitWrapper where Base == UIColor.Type {
     enum GradientDirection : Int {
         case vertical = 0
 
@@ -118,7 +143,7 @@ public extension UIColor {
     ///   - locations: 0-1范围的色点，标记每个颜色在0-1范围位置点
     ///   - size: 视图的大小
     ///   - direction: 渐变颜色的方向 radar为环状渐变，类似雷达水波纹
-    class func gradient(colors: [UIColor], locations: [CGFloat], size: CGSize, direction: GradientDirection ) -> UIColor {
+    func gradient(colors: [UIColor], locations: [CGFloat], size: CGSize, direction: GradientDirection ) -> UIColor {
         UIGraphicsBeginImageContextWithOptions(size, false, 0) //开启图片上下文
         guard let context = UIGraphicsGetCurrentContext() else { return UIColor.white } // 获取上下文
         let colorSpace = CGColorSpaceCreateDeviceRGB() // 开启颜色空间

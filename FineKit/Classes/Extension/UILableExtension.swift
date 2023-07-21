@@ -8,8 +8,9 @@
 
 import UIKit
 
-public extension UILabel {
-    static func cz_init(text: String, font: UIFont?, color: UIColor?) -> UILabel {
+public extension FineKitWrapper where Base == UILabel.Type {
+
+    func cz_init(text: String, font: UIFont?, color: UIColor?) -> UILabel {
         let lab = UILabel()
         lab.text = text
         lab.font = font
@@ -17,7 +18,9 @@ public extension UILabel {
         
         return lab
     }
-    
+}
+
+public extension FineKitWrapper where Base == UILabel {
     /// 设置富文本
     /// - Parameters:
     ///   - font: 字体
@@ -26,33 +29,33 @@ public extension UILabel {
     ///   - wordSpace: 字间距
     func set(font: UIFont? = nil, color: UIColor? = nil, LineSpace: CGFloat? = nil, wordSpace: CGFloat? = nil) {
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineBreakMode = self.lineBreakMode
-        paragraphStyle.alignment = self.textAlignment
+        paragraphStyle.lineBreakMode = self.base.lineBreakMode
+        paragraphStyle.alignment = self.base.textAlignment
         
         if let kLineSpace = LineSpace {
             paragraphStyle.lineSpacing = kLineSpace
         }
         
-        let mas = NSMutableAttributedString(string: self.text ?? "")
+        let mas = NSMutableAttributedString(string: self.base.text ?? "")
         
         if let kFont = font {
-            mas.addAttribute(NSAttributedString.Key.font, value: kFont, range: NSRange(location: 0, length: self.text?.count ?? 0))
-        } else if let kFont = self.font {
-            mas.addAttribute(NSAttributedString.Key.font, value: kFont, range: NSRange(location: 0, length: self.text?.count ?? 0))
+            mas.addAttribute(NSAttributedString.Key.font, value: kFont, range: NSRange(location: 0, length: self.base.text?.count ?? 0))
+        } else if let kFont = self.base.font {
+            mas.addAttribute(NSAttributedString.Key.font, value: kFont, range: NSRange(location: 0, length: self.base.text?.count ?? 0))
         }
         
         if let kColor = color {
-            mas.addAttribute(NSAttributedString.Key.foregroundColor, value: kColor, range: NSRange(location: 0, length: self.text?.count ?? 0))
-        } else if let kColor = self.textColor {
-            mas.addAttribute(NSAttributedString.Key.foregroundColor, value: kColor, range: NSRange(location: 0, length: self.text?.count ?? 0))
+            mas.addAttribute(NSAttributedString.Key.foregroundColor, value: kColor, range: NSRange(location: 0, length: self.base.text?.count ?? 0))
+        } else if let kColor = self.base.textColor {
+            mas.addAttribute(NSAttributedString.Key.foregroundColor, value: kColor, range: NSRange(location: 0, length: self.base.text?.count ?? 0))
         }
         
         if let kWordSpace = wordSpace {
-            mas.addAttribute(NSAttributedString.Key.kern, value: kWordSpace, range: NSRange(location: 0, length: self.text?.count ?? 0))
+            mas.addAttribute(NSAttributedString.Key.kern, value: kWordSpace, range: NSRange(location: 0, length: self.base.text?.count ?? 0))
         }
         
-        mas.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: self.text?.count ?? 0))
+        mas.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: self.base.text?.count ?? 0))
         
-        self.attributedText = mas
+        self.base.attributedText = mas
     }
 }

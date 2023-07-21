@@ -8,64 +8,64 @@
 
 import UIKit
 
-public extension UIView {
+public extension FineKitWrapper where Base: UIView {
     func add(views: [UIView]) {
         views.forEach { v in
-            self.addSubview(v)
+            self.base.addSubview(v)
         }
     }
     
     var width : CGFloat {
         get {
-            return self.frame.size.width
+            return self.base.frame.size.width
         }
         set {
-            self.frame.size.width = newValue
+            self.base.frame.size.width = newValue
         }
     }
     
     var height : CGFloat {
         get {
-            return self.frame.size.height
+            return self.base.frame.size.height
         }
         set {
-            self.frame.size.height = newValue
+            self.base.frame.size.height = newValue
         }
     }
     
     var x : CGFloat {
         get {
-            return self.frame.origin.x
+            return self.base.frame.origin.x
         }
         set {
-            self.frame.origin.x = newValue
+            self.base.frame.origin.x = newValue
         }
     }
     
     var y: CGFloat {
         get {
-            return self.frame.origin.y
+            return self.base.frame.origin.y
         }
         set {
-            self.frame.origin.y = newValue
+            self.base.frame.origin.y = newValue
         }
     }
     
     var centerX : CGFloat {
         get {
-            return self.center.x
+            return self.base.center.x
         }
         set {
-            self.center = CGPoint(x: newValue, y: self.center.y)
+            self.base.center = CGPoint(x: newValue, y: self.base.center.y)
         }
     }
     
     var centerY : CGFloat {
         get {
-            return self.center.y
+            return self.base.center.y
         }
         set {
-            self.center = CGPoint(x: self.center.x, y: newValue)
+            self.base.center = CGPoint(x: self.base.center.x, y: newValue)
         }
     }
     
@@ -89,10 +89,10 @@ public extension UIView {
     
     var size: CGSize {
         get {
-            return self.frame.size
+            return self.base.frame.size
         }
         set {
-            self.frame.size = newValue
+            self.base.frame.size = newValue
         }
     }
     
@@ -103,18 +103,18 @@ public extension UIView {
     }
 }
 
-public extension UIView {
+public extension FineKitWrapper where Base: UIView {
     
     /// ShapeLayer绘制圆角
     /// - Parameters:
     ///   - radius: 半径
     ///   - type: UIRectCorner
     func setCornerRadius(_ radius:CGFloat, type: UIRectCorner){
-        let maskPath = UIBezierPath(roundedRect: self.bounds, byRoundingCorners: type, cornerRadii: CGSize(width: radius, height: radius))
+        let maskPath = UIBezierPath(roundedRect: self.base.bounds, byRoundingCorners: type, cornerRadii: CGSize(width: radius, height: radius))
         let maskLayer = CAShapeLayer();
-        maskLayer.frame = self.bounds
+        maskLayer.frame = self.base.bounds
         maskLayer.path = maskPath.cgPath
-        self.layer.mask = maskLayer;
+        self.base.layer.mask = maskLayer;
     }
     
     /// layer圆角（离屏渲染）
@@ -122,41 +122,52 @@ public extension UIView {
     ///   - radius: 半径
     ///   - mask: 裁剪
     func setCornerRadius(_ radius:CGFloat, mask: Bool = true){
-        self.layer.masksToBounds = mask
-        self.layer.cornerRadius = radius
+        self.base.layer.masksToBounds = mask
+        self.base.layer.cornerRadius = radius
     }
     
     /// layer属性设置
     /// - Parameters:
     ///   - borderWidth: 边宽
     ///   - borderColor: 边色
-    func setBorderProperty(width borderWidth:CGFloat,_ borderColor:UIColor = UIColor.black){
-        self.layer.borderWidth = borderWidth
-        self.layer.borderColor = borderColor.cgColor
+    func setBorderProperty(width borderWidth: CGFloat, _ borderColor: UIColor = UIColor.black){
+        if let kLayer = self.base.layer.mask as? CAShapeLayer {
+            let layer = CAShapeLayer()
+            layer.path = kLayer.path
+            layer.fillColor = UIColor.clear.cgColor
+            layer.strokeColor = borderColor.cgColor
+            layer.lineWidth = borderWidth
+            layer.frame = self.base.bounds
+            
+            self.base.layer.addSublayer(layer)
+        } else {
+            self.base.layer.borderWidth = borderWidth
+            self.base.layer.borderColor = borderColor.cgColor
+        }
     }
 }
 
-public extension UIView {
+public extension FineKitWrapper where Base: UIView {
     
     /// 根据给定的约束宽，获取合适的高
     /// - Parameter width: 约束宽
     func getRightHeight(width: CGFloat) -> CGFloat {
-        return self.sizeThatFits(CGSize(width: width, height: CGFloat(MAXFLOAT))).height
+        return self.base.sizeThatFits(CGSize(width: width, height: CGFloat(MAXFLOAT))).height
     }
     
     /// 根据给定的约束高，获取合适的宽
     /// - Parameter width: 约束高
     func getRightWidth(height: CGFloat) -> CGFloat {
-        return self.sizeThatFits(CGSize(width: CGFloat(MAXFLOAT), height: height)).width
+        return self.base.sizeThatFits(CGSize(width: CGFloat(MAXFLOAT), height: height)).width
     }
 }
 
 @available(iOS 10.0, *)
-public extension UIView {
+public extension FineKitWrapper where Base: UIView {
     func asImage() -> UIImage {
-        let renderer = UIGraphicsImageRenderer(bounds: bounds)
+        let renderer = UIGraphicsImageRenderer(bounds: self.base.bounds)
         return renderer.image { rendererContext in
-            layer.render(in: rendererContext.cgContext)
+            self.base.layer.render(in: rendererContext.cgContext)
         }
     }
 }

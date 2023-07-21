@@ -3,7 +3,8 @@ use_frameworks!
 platform :ios, '12.0'
 
 target 'FineKit_Example' do
-  pod 'FineKit', :path => '../'
+  pod 'FineKit/Extension', :path => '../'
+#  pod 'FineKit/Tools', :path => '../'
 
   target 'FineKit_Tests' do
     inherit! :search_paths

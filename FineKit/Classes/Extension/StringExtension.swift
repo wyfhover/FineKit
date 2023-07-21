@@ -9,9 +9,9 @@
 import UIKit
 import CommonCrypto
 
-public extension String {
-    var md5:String {
-        let utf8 = cString(using: .utf8)
+public extension FineKitWrapper where Base == String {
+    var md5: String {
+        let utf8 = self.base.cString(using: .utf8)
         var digest = [UInt8](repeating: 0, count: Int(CC_MD5_DIGEST_LENGTH))
         CC_MD5(utf8, CC_LONG(utf8!.count - 1), &digest)
         return digest.reduce("") { $0 + String(format:"%02X", $1) }
@@ -20,7 +20,7 @@ public extension String {
     /// 版本号转Int
     /// - Parameter version: 版本号
     func versionToInt() -> Int {
-        let vers = self.split(separator: ".")
+        let vers = self.base.split(separator: ".")
         let count = vers.count
         var ver_int: Int = 0
         for (idx, ver) in vers.enumerated() {
@@ -33,38 +33,38 @@ public extension String {
 }
 
 // MARK: - 富文本
-public extension String {
+public extension FineKitWrapper where Base == String {
     func getContentSize(_ font: UIFont, _ lineSpeace: CGFloat = 1.5, maxWidth: CGFloat) -> CGSize{
         let dic = [NSAttributedString.Key.font: font] as [NSAttributedString.Key : Any]
         
-        let rect = (self as NSString).boundingRect(with: CGSize(width: maxWidth, height: CGFloat(MAXFLOAT)), options: .usesLineFragmentOrigin, attributes: dic, context: nil)
+        let rect = (self.base as NSString).boundingRect(with: CGSize(width: maxWidth, height: CGFloat(MAXFLOAT)), options: .usesLineFragmentOrigin, attributes: dic, context: nil)
         return rect.size
     }
     
     func getContentWidth(_ font: UIFont, _ lineSpeace: CGFloat = 1.5, height: CGFloat) -> CGFloat {
         let dic = [NSAttributedString.Key.font: font] as [NSAttributedString.Key : Any]
         
-        let rect = (self as NSString).boundingRect(with: CGSize(width: CGFloat(MAXFLOAT), height: height), options: .usesLineFragmentOrigin, attributes: dic, context: nil)
+        let rect = (self.base as NSString).boundingRect(with: CGSize(width: CGFloat(MAXFLOAT), height: height), options: .usesLineFragmentOrigin, attributes: dic, context: nil)
         return rect.size.width
     }
     
     func getContentHeight(_ font: UIFont, _ lineSpeace: CGFloat = 1.5, width: CGFloat) -> CGFloat {
         let dic = [NSAttributedString.Key.font: font] as [NSAttributedString.Key : Any]
         
-        let rect = (self as NSString).boundingRect(with: CGSize(width: width, height: CGFloat(MAXFLOAT)), options: .usesLineFragmentOrigin, attributes: dic, context: nil)
+        let rect = (self.base as NSString).boundingRect(with: CGSize(width: width, height: CGFloat(MAXFLOAT)), options: .usesLineFragmentOrigin, attributes: dic, context: nil)
         return rect.size.height
     }
     
 }
 
 // MARK: - 进制转换
-public extension String {
+public extension FineKitWrapper where Base == String {
     func hexadecimal() -> Data? {
-        var data = Data(capacity: self.count/2)
+        var data = Data(capacity: self.base.count/2)
 
         let regex = try! NSRegularExpression(pattern: "[0-9a-f]{1,2}", options: .caseInsensitive)
-        regex.enumerateMatches(in: self, range: NSMakeRange(0, utf16.count)) { match, flags, stop in
-            let byteString = (self as NSString).substring(with: match!.range)
+        regex.enumerateMatches(in: self.base, range: NSMakeRange(0, self.base.utf16.count)) { match, flags, stop in
+            let byteString = (self.base as NSString).substring(with: match!.range)
             var num = UInt8(byteString, radix: 16)!
             data.append(&num, count: 1)
         }
@@ -88,7 +88,7 @@ public extension String {
             return tStr
         }
         
-        if let num = Int64(self) {
+        if let num = Int64(self.base) {
             if num > 0 {
                 str = convert(UInt64(num))
                 return str
@@ -121,7 +121,7 @@ public extension String {
     /// 二进制转无符号十进制
     func binTodec() -> Int {
         var sum: Int = 0
-        for c in self {
+        for c in self.base {
             let str = String(c)
             sum = sum * 2 + Int(str)!
         }
@@ -130,12 +130,12 @@ public extension String {
 
     /// 无符号十进制转十六进制
     func decTohex() -> String {
-        return String(format: "%0X", self)
+        return String(format: "%0X", self.base)
     }
 
     /// 无符号十六进制转十进制
     func hexTodec() -> Int {
-        let str = self.uppercased()
+        let str = self.base.uppercased()
         var sum = 0
         for i in str.utf8 {
             sum = sum * 16 + Int(i) - 48 // 0-9 从48开始
@@ -148,7 +148,7 @@ public extension String {
 }
 
 // MARK: - 截取插入
-public extension String {
+public extension FineKitWrapper where Base == String {
     /// 字符串任意位置插入
     ///
     /// - Parameters:
@@ -157,11 +157,11 @@ public extension String {
     /// - Returns: 添加后的字符串
     func insert(_ content: String,locat: Int) -> String? {
         if locat <= 0 {
-            return content + self
-        } else if locat >= count {
-            return self + content
-        } else if let prefix = self[w: ..<locat],
-           let suffix = self[w: locat...] {
+            return content + self.base
+        } else if locat >= self.base.count {
+            return self.base + content
+        } else if let prefix = self.base.fk[w: ..<locat],
+                  let suffix = self.base.fk[w: locat...] {
             return prefix + content + suffix
         } else {
             return nil
@@ -170,39 +170,39 @@ public extension String {
 }
 
 // MARK: - Range
-public extension String {
+public extension FineKitWrapper where Base == String {
     /// range转换为NSRange
     func nsRange(from range: Range<String.Index>) -> NSRange {
-        return NSRange(range, in: self)
+        return NSRange(range, in: self.base)
     }
     
     /// NSRange转化为range
     func range(from nsRange: NSRange) -> Range<String.Index>? {
         guard
-            let from16 = utf16.index(utf16.startIndex, offsetBy: nsRange.location, limitedBy: utf16.endIndex),
-            let to16 = utf16.index(from16, offsetBy: nsRange.length, limitedBy: utf16.endIndex),
-            let from = String.Index(from16, within: self),
-            let to = String.Index(to16, within: self)
+            let from16 = self.base.utf16.index(self.base.utf16.startIndex, offsetBy: nsRange.location, limitedBy: self.base.utf16.endIndex),
+            let to16 = self.base.utf16.index(from16, offsetBy: nsRange.length, limitedBy: self.base.utf16.endIndex),
+            let from = String.Index(from16, within: self.base),
+            let to = String.Index(to16, within: self.base)
             else { return nil }
           return from ..< to
     }
 }
 
 // MARK: - 内容判断
-public extension String {
+public extension FineKitWrapper where Base == String {
     /// 是否为单个emoji表情
     var isSingleEmoji: Bool {
-        return count==1&&containsEmoji
+        return self.base.count==1&&containsEmoji
     }
 
     /// 包含emoji表情
     var containsEmoji: Bool {
-        return contains{ $0.isEmoji}
+        return self.base.contains{ $0.fk.isEmoji}
     }
 
     /// 只包含emoji表情
     var containsOnlyEmoji: Bool {
-        return !isEmpty && !contains{!$0.isEmoji}
+        return !self.base.isEmpty && !self.base.contains{!$0.fk.isEmoji}
     }
 
     /// 提取emoji表情字符串
@@ -212,19 +212,19 @@ public extension String {
 
     /// 提取emoji表情数组
     var emojis: [Character] {
-        return filter{ $0.isEmoji}
+        return self.base.filter{ $0.fk.isEmoji}
     }
 
     /// 提取单元编码标量
     var emojiScalars: [UnicodeScalar] {
-        return filter{ $0.isEmoji}.flatMap{ $0.unicodeScalars}
+        return self.base.filter{ $0.fk.isEmoji}.flatMap{ $0.unicodeScalars}
     }
     
     /// 含有中文
     var containsChinese: Bool {
         var isContainChinese:Bool = false
-        for i in 0..<Int(self.count){
-            let c = NSString(string: self).character(at: i)
+        for i in 0..<Int(self.base.count){
+            let c = NSString(string: self.base).character(at: i)
             if(c>0x4e00 && c < 0x9fa5) {
                 isContainChinese = true
                 break
@@ -235,18 +235,18 @@ public extension String {
 }
 
 // MARK: - URL
-public extension String {
+public extension FineKitWrapper where Base == String {
     
     /// 将原始的url编码为合法的url字符串
     func urlEncoded() -> String {
-        let encodeUrlString = self.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        let encodeUrlString = self.base.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
         return encodeUrlString ?? ""
     }
      
     
     /// 将编码后的url转换回原始的url字符串
     func urlDecoded() -> String {
-        return self.removingPercentEncoding ?? ""
+        return self.base.removingPercentEncoding ?? ""
     }
     
     /// url合法化
@@ -255,18 +255,18 @@ public extension String {
     }
 }
 
-public extension Character {
+public extension FineKitWrapper where Base == Character {
     /// 简单的emoji是一个标量，以emoji的形式呈现给用户
     var isSimpleEmoji: Bool {
-        guard let firstProperties = unicodeScalars.first?.properties else {
+        guard let firstProperties = self.base.unicodeScalars.first?.properties else {
             return false
         }
         if #available(iOS 10.2, *) {
-            return unicodeScalars.count > 0 &&
+            return self.base.unicodeScalars.count > 0 &&
             (firstProperties.isEmojiPresentation ||
              firstProperties.generalCategory == .otherSymbol)
         } else {
-            return unicodeScalars.count > 0 &&
+            return self.base.unicodeScalars.count > 0 &&
             (firstProperties.generalCategory == .otherSymbol)
         }
                 
@@ -274,8 +274,8 @@ public extension Character {
 
     /// 检查标量是否将合并到emoji中
     var isCombinedIntoEmoji: Bool {
-        return unicodeScalars.count > 0 &&
-            unicodeScalars.contains { $0.properties.isJoinControl || $0.properties.isVariationSelector }
+        return self.base.unicodeScalars.count > 0 &&
+        self.base.unicodeScalars.contains { $0.properties.isJoinControl || $0.properties.isVariationSelector }
     }
 
     /// 是否为emoji表情
@@ -285,16 +285,17 @@ public extension Character {
     }
 }
 
-extension NSAttributedString {
+public extension FineKitWrapper where Base == NSAttributedString {
+
     func getContentSize(maxWidth: CGFloat) -> CGSize {
-        return self.boundingRect(with: CGSize(width: maxWidth, height: CGFloat(MAXFLOAT)), options: .usesLineFragmentOrigin, context: nil).size
+        return self.base.boundingRect(with: CGSize(width: maxWidth, height: CGFloat(MAXFLOAT)), options: .usesLineFragmentOrigin, context: nil).size
     }
     
     func getContentWidth(height: CGFloat) -> CGFloat {
-        return self.boundingRect(with: CGSize(width: CGFloat(MAXFLOAT), height: height), options: .usesLineFragmentOrigin, context: nil).size.width
+        return self.base.boundingRect(with: CGSize(width: CGFloat(MAXFLOAT), height: height), options: .usesLineFragmentOrigin, context: nil).size.width
     }
     
     func getContentHeight(width: CGFloat) -> CGFloat {
-        return self.boundingRect(with: CGSize(width: width, height: CGFloat(MAXFLOAT)), options: .usesLineFragmentOrigin, context: nil).size.height
+        return self.base.boundingRect(with: CGSize(width: width, height: CGFloat(MAXFLOAT)), options: .usesLineFragmentOrigin, context: nil).size.height
     }
 }
