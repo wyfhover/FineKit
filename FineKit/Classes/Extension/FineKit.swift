@@ -43,6 +43,8 @@ extension UIImage: FineKitCompatible {}
 extension UIViewController: FineKitCompatible {}
 extension UIView: FineKitCompatible {}
 
+extension NSData: FineKitCompatible {}
+
 // MARK: - 协议
 extension BinaryFloatingPoint {
     public var fk: FineKitWrapper<Self> {

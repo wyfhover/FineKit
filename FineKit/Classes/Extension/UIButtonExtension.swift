@@ -32,15 +32,13 @@ public extension FineKitWrapper where Base == UIButton {
     /// - Parameters:
     ///   - count: 倒计时长
     ///   - message: 显示信息，带count参数占位符
-    mutating func startCountdown(count: Int = 60, message: String = "%d") {
+    mutating func startCountdown(count: Int = 60, message: String = "%d", color: UIColor? = nil) {
         let title = self.base.currentTitle!
         var countTime = count
-//        let backgroundColor = self.backgroundColor
         let titleColor = self.base.currentTitleColor
         
         self.base.fk.isCountdown = true
         self.base.isEnabled = false
-//        self.backgroundColor = UIColor.clear
         
         let time = DispatchSource.makeTimerSource(queue: DispatchQueue.main)
         
@@ -56,12 +54,12 @@ public extension FineKitWrapper where Base == UIButton {
                 
                 kBase.fk.isCountdown = false
                 kBase.isEnabled = true
-//                self.backgroundColor = backgroundColor
                 kBase.setTitleColor(titleColor, for: .normal)
                 kBase.setTitle(title, for: .normal)
                 
             } else {
                 kBase.setTitle(String(format: message, countTime), for: .normal)
+                kBase.setTitleColor(color, for: .normal)
             }
         }
         

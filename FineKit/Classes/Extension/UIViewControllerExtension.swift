@@ -40,18 +40,22 @@ public extension FineKitWrapper where Base: UIViewController {
     func setNavi(color: UIColor ) {
         guard let naviVC = self.base.navigationController else { return }
         if #available(iOS 13, *) {
-            let appeance = naviVC.navigationBar.standardAppearance
+            let appeance = naviVC.navigationBar.standardAppearance.copy()
             
             if color == .clear {
                 appeance.configureWithTransparentBackground()
                 appeance.backgroundImage = UIImage()
+                appeance.shadowImage = UIImage()
+                
             } else {
 //                appeance.configureWithOpaqueBackground()
                 appeance.backgroundImage = UIImage.fk.from(color: color)
+                appeance.shadowImage = UIImage.fk.from(color: color)
             }
             appeance.backgroundColor = color
+            appeance.shadowColor = color
             
-//            naviVC.navigationBar.standardAppearance = appeance
+            naviVC.navigationBar.standardAppearance = appeance
             
             if #available(iOS 15, *) {
                 naviVC.navigationBar.scrollEdgeAppearance = appeance
@@ -83,7 +87,7 @@ public extension FineKitWrapper where Base: UIViewController {
     }
     
     /// 隐藏导航栏阴影线
-    func setShadowHiden() {
+    func setNaviShadowHidden() {
         var naviVC: UINavigationController? = nil
         if let tNaviVC = self.base as? UINavigationController {
             naviVC = tNaviVC
@@ -96,13 +100,34 @@ public extension FineKitWrapper where Base: UIViewController {
         if #available(iOS 13, *) {
             let appeance = kNaviVC.navigationBar.standardAppearance
             appeance.shadowImage = UIImage()
-            
             kNaviVC.navigationBar.standardAppearance = appeance
-            if #available(iOS 15, *) {
-                kNaviVC.navigationBar.scrollEdgeAppearance = appeance
-            }
+//            if #available(iOS 15, *) {
+//                kNaviVC.navigationBar.scrollEdgeAppearance = appeance
+//            }
         } else {
             kNaviVC.navigationBar.shadowImage = UIImage()
+        }
+    }
+    
+    /// 隐藏标签栏阴影线
+    func setTabbarShadowHidden() {
+        var tabbarC: UITabBarController? = nil
+        
+        if let tTabbarC = self.base as? UITabBarController {
+            tabbarC = tTabbarC
+        } else if let tTabbarC = self.base.tabBarController {
+            tabbarC = tTabbarC
+        }
+        
+        guard let kTabbarC = tabbarC else { return }
+        
+        if #available(iOS 13, *) {
+            let appearance = kTabbarC.tabBar.standardAppearance.copy()
+            appearance.shadowImage = UIImage()
+            appearance.backgroundImage = UIImage()
+            kTabbarC.tabBar.standardAppearance = appearance
+        } else {
+            kTabbarC.tabBar.shadowImage = UIImage()
         }
     }
 }

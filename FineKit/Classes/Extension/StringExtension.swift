@@ -160,8 +160,8 @@ public extension FineKitWrapper where Base == String {
             return content + self.base
         } else if locat >= self.base.count {
             return self.base + content
-        } else if let prefix = self.base.fk[w: ..<locat],
-                  let suffix = self.base.fk[w: locat...] {
+        } else if let prefix = self.base.fk[..<locat],
+                  let suffix = self.base.fk[locat...] {
             return prefix + content + suffix
         } else {
             return nil

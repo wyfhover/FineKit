@@ -69,23 +69,17 @@ public extension FineKitWrapper where Base: UIView {
         }
     }
     
-    var maxY : CGFloat{
-        get {
-            return self.y + self.height
-        }
-        set {
-            self.y = newValue - self.height
-        }
-    }
-    
-    var maxX : CGFloat{
-        get {
-            return self.x + self.width
-        }
-        set {
-            self.x = newValue - self.width
-        }
-    }
+//    var maxY : CGFloat{
+//        get {
+//            return self.y + self.height
+//        }
+//    }
+//    
+//    var maxX : CGFloat{
+//        get {
+//            return self.x + self.width
+//        }
+//    }
     
     var size: CGSize {
         get {
@@ -99,6 +93,42 @@ public extension FineKitWrapper where Base: UIView {
     var kCenter: CGPoint {
         get {
             return CGPoint(x: self.width / 2, y: self.height / 2)
+        }
+    }
+    
+    var top: CGFloat {
+        get {
+            return self.y
+        }
+        set {
+            self.y = newValue
+        }
+    }
+    
+    var bottom: CGFloat {
+        get {
+            return self.y + self.height
+        }
+        set {
+            self.height = newValue - self.y
+        }
+    }
+    
+    var leading: CGFloat {
+        get {
+            return self.x
+        }
+        set {
+            self.x = newValue
+        }
+    }
+    
+    var trailing : CGFloat {
+        get {
+            return self.x + self.width
+        }
+        set {
+            self.width = newValue - self.x
         }
     }
 }
