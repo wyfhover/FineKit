@@ -206,6 +206,13 @@ public func FKScreenSnapshot(view: UIView) -> UIImage? {
     
 }
 
+public func FKOpenSystemSettings() {
+    guard let settingURL = URL(string: UIApplication.openSettingsURLString) else { return }
+    if UIApplication.shared.canOpenURL(settingURL){
+        UIApplication.shared.open(settingURL, options: [:], completionHandler: nil)
+    }
+}
+
 /// 检查APP更新
 /// - Parameters:
 ///   - appID: appID
