@@ -17,7 +17,7 @@ class ViewController: UIViewController {
         
         var bytes: [UInt8] = [0xAA, 0xBB]
         print(bytes.fk.hexString)
-        print(bytes.fk[w: 0])
+        print(bytes.fk[0])
         
         let b = 1.1
 //        print(b.toBytes())
