@@ -8,35 +8,23 @@
 
 import UIKit
 
-fileprivate let DocumentsPath = NSHomeDirectory() + "/Documents/"
-fileprivate let FirmwarePath = DocumentsPath + "Firmware/"
-fileprivate let IconPath = DocumentsPath + "Icon/"
-fileprivate let GifPath = DocumentsPath + "Gif/"
-fileprivate let AudioPath = DocumentsPath + "Audio/"
-fileprivate let RestorePath = DocumentsPath + "Restore/"
+fileprivate let HomePath = NSHomeDirectory()
+fileprivate let DocumentsPath = HomePath.appending("/Documents")
+fileprivate let TempPath = NSTemporaryDirectory()
 
 public enum FKFilePath {
-    case document
-    case firmware
-    case icon
-    case gif
-    case audio
-    case restore
+    case home(path: String)
+    case document(path: String)
+    case temp(path: String)
     
     func getPath() -> String {
         switch self {
-        case .document:
-            return DocumentsPath
-        case .firmware:
-            return FirmwarePath
-        case .icon:
-            return IconPath
-        case .gif:
-            return GifPath
-        case .audio:
-            return AudioPath
-        case .restore:
-            return RestorePath
+        case let .home(path):
+            return HomePath.appending(path)
+        case let .document(path):
+            return DocumentsPath.appending(path)
+        case let .temp(path):
+            return TempPath.appending(path)
         }
     }
 }
@@ -49,7 +37,7 @@ public class FKFileManager {
     private init() {}
     
     public func save(fileName: String, data: Data, path: FKFilePath, complete: ((Bool) -> Void)? = nil) {
-        let targetPath = path.getPath() + self.tranform(fileName: fileName)
+        let targetPath = path.getPath().appending(self.tranform(fileName: fileName))
         let kUrl = URL(fileURLWithPath: targetPath)
         
         self.fileQueue.async(group: nil, qos: .default, flags: .barrier) { [weak self] in
@@ -78,7 +66,7 @@ public class FKFileManager {
     
     func copy(path: String, fileName: String, to toPath: FKFilePath, complete: ((Bool) -> Void)? = nil) {
         let targetPath = toPath.getPath() + self.tranform(fileName: fileName)
-        _ = URL(fileURLWithPath: targetPath)
+//        _ = URL(fileURLWithPath: targetPath)
         
         guard URL(string: path) != nil else {
             complete?(false)
@@ -125,6 +113,15 @@ public class FKFileManager {
         return from.getPath() + self.tranform(fileName: (name ?? ""))
     }
     
+    /// 获取路径URL
+    /// - Parameters:
+    ///   - from: 文件路径
+    ///   - name: 文件名
+    public func getPathUrl(from: FKFilePath, with name: String? = nil) -> URL {
+        let path = self.getPath(from: from, with: name)
+        return URL(fileURLWithPath: path)
+    }
+    
     public func checkFileExists(name: String, from path: FKFilePath) -> Bool {
         let targetPath = path.getPath() + self.tranform(fileName: name)
         return FileManager.default.fileExists(atPath: targetPath)
@@ -141,6 +138,12 @@ public class FKFileManager {
     private func loadDataToPath(_ path: String)-> Data?{
         let url = URL(fileURLWithPath: path)
         let data = try? Data(contentsOf: url)
+        return data
+    }
+    
+    private func loadDataToPath(_ path: URL)-> Data?{
+//        let url = URL(fileURLWithPath: path)
+        let data = try? Data(contentsOf: path)
         return data
     }
     
