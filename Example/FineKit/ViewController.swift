@@ -15,27 +15,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        var bytes: [UInt8] = [0xAA, 0xBB]
-        
-        print(bytes.fk.hexString)
-        print(bytes.fk[0])
-        
-        let b = 1.1
-//        print(b.toBytes())
-        print(b.fk.toBytes())
-        
-        
-        let data = Data(bytes: bytes, count: bytes.count)
-        print(data.fk.hexadecimal(","))
-        
-        let c: Int32 = 256
-        print(c.fk.toBytes())
-        
-        let v = UIButton()
-        
-//        UIColor.fk.
-        
-        print("end")
+        FKFileManager.shared.save(fileName: "test", data: Data(), path: .temp(path: "ABC"))
     }
 
     override func didReceiveMemoryWarning() {

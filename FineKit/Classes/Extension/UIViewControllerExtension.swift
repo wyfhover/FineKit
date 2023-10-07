@@ -130,6 +130,22 @@ public extension FineKitWrapper where Base: UIViewController {
             kTabbarC.tabBar.shadowImage = UIImage()
         }
     }
+    
+    func setTitle(color: UIColor) {
+        guard let naviVC = self.base.navigationController else { return }
+        
+        if #available(iOS 13, *) {
+            let appeance = naviVC.navigationBar.standardAppearance
+            
+            appeance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+            
+            if #available(iOS 15, *) {
+                naviVC.navigationBar.scrollEdgeAppearance = appeance
+            }
+        } else {
+            naviVC.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        }
+    }
 }
 
 // MARK: - 返回手势相关

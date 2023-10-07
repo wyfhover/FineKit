@@ -20,9 +20,9 @@ public enum FKFilePath {
     func getPath() -> String {
         switch self {
         case let .home(path):
-            return HomePath.appending(path)
+            return HomePath.appending(path.file)
         case let .document(path):
-            return DocumentsPath.appending(path)
+            return DocumentsPath.appending(path.file)
         case let .temp(path):
             return TempPath.appending(path)
         }
@@ -36,8 +36,13 @@ public class FKFileManager {
     
     private init() {}
     
+    /// 保存
+    /// - Parameters:
+    ///   - fileName: 文件名
+    ///   - data: 二进制数据
+    ///   - path: 文件夹路径
     public func save(fileName: String, data: Data, path: FKFilePath, complete: ((Bool) -> Void)? = nil) {
-        let targetPath = path.getPath().appending(self.tranform(fileName: fileName))
+        let targetPath = path.getPath().appending(self.tranform(fileName: fileName).file)
         let kUrl = URL(fileURLWithPath: targetPath)
         
         self.fileQueue.async(group: nil, qos: .default, flags: .barrier) { [weak self] in
@@ -64,9 +69,13 @@ public class FKFileManager {
         }
     }
     
+    /// 拷贝文件到新路径
+    /// - Parameters:
+    ///   - path: 旧文件路径
+    ///   - fileName: 旧文件名
+    ///   - toPath: 新文件路径
     func copy(path: String, fileName: String, to toPath: FKFilePath, complete: ((Bool) -> Void)? = nil) {
-        let targetPath = toPath.getPath() + self.tranform(fileName: fileName)
-//        _ = URL(fileURLWithPath: targetPath)
+        let targetPath = toPath.getPath().appending(self.tranform(fileName: fileName).file)
         
         guard URL(string: path) != nil else {
             complete?(false)
@@ -85,17 +94,25 @@ public class FKFileManager {
         }
     }
     
+    /// 读取
+    /// - Parameters:
+    ///   - fileName: 文件名
+    ///   - path: 文件路径
     public func read(fileName: String, from path: FKFilePath, callback: @escaping (Data?) -> Void) {
         self.fileQueue.async {
-            let targetPath = path.getPath() + self.tranform(fileName: fileName)
+            let targetPath = path.getPath().appending(self.tranform(fileName: fileName).file)
             let data = self.loadDataToPath(targetPath)
             callback(data)
         }
     }
     
+    /// 删除
+    /// - Parameters:
+    ///   - fileName: 文件名
+    ///   - path: 文件路径
     public func delete(fileName: String, from path: FKFilePath, callback: ((Bool) -> Void)? = nil) {
         self.fileQueue.async(group: nil, qos: .default, flags: .barrier) {
-            let targetPath = path.getPath() + self.tranform(fileName: fileName)
+            let targetPath = path.getPath().appending(self.tranform(fileName: fileName))
             if FileManager.default.fileExists(atPath: targetPath) { //检查文件夹中目标文件是否存在
                 self.deleteDataToPath(targetPath)
                 callback?(true)
@@ -110,7 +127,11 @@ public class FKFileManager {
     ///   - from: 文件类型
     ///   - name: 文件名
     public func getPath(from: FKFilePath, with name: String? = nil) -> String {
-        return from.getPath() + self.tranform(fileName: (name ?? ""))
+        if let name = name, !name.isEmpty {
+            return from.getPath().appending(self.tranform(fileName: name).file)
+        } else {
+            return from.getPath()
+        }
     }
     
     /// 获取路径URL
@@ -123,7 +144,7 @@ public class FKFileManager {
     }
     
     public func checkFileExists(name: String, from path: FKFilePath) -> Bool {
-        let targetPath = path.getPath() + self.tranform(fileName: name)
+        let targetPath = path.getPath().appending(self.tranform(fileName: name).file)
         return FileManager.default.fileExists(atPath: targetPath)
     }
     
@@ -151,5 +172,11 @@ public class FKFileManager {
         try? FileManager.default.removeItem(atPath: path)
     }
     
+}
+
+fileprivate extension String {
+    var file: String {
+        return String(format: "/%@", self)
+    }
 }
 

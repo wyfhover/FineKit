@@ -216,8 +216,8 @@ public func FKOpenSystemSettings() {
 /// 检查APP更新
 /// - Parameters:
 ///   - appID: appID
-public func FKCheckAppUpgrade(appID: String, callback: @escaping ((Bool, String?, String?)->Void)){
-    let url_str = "http://itunes.apple.com/cn/lookup?id=\(appID)"
+public func FKCheckAppUpgrade(appID: String, isAbroad: Bool = false, callback: @escaping ((Bool, String?, String?)->Void)){
+    let url_str = isAbroad ? "http://itunes.apple.com/us/lookup?id=\(appID)" : "http://itunes.apple.com/cn/lookup?id=\(appID)"
     guard let url = URL(string: url_str) else { return }
     
     URLSession.shared.dataTask(with: url, completionHandler: { data, rsp, error in
